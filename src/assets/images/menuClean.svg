@@ -1,0 +1,15 @@
+<svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        svg:hover rect {
+            fill: #FF0000; /* Cambia a rojo al pasar el cursor por encima */
+        }
+        rect {
+            fill: #FFFFFF; /* Color inicial blanco */
+            transition: fill 0.3s;
+        }
+    </style>
+    <rect width="35" height="5" x="7.5" y="10" rx="2.5"/>
+    <rect width="35" height="5" x="7.5" y="20" rx="2.5"/>
+    <rect width="35" height="5" x="7.5" y="30" rx="2.5"/>
+</svg>
+

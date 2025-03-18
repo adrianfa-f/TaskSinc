@@ -1,0 +1,16 @@
+rect {
+  fill: white;
+  transition: fill 0.3s;
+}
+
+svg:hover #recta1 {
+  fill: #faaa39;
+}
+
+svg:hover #recta2 {
+  fill: #ee8a4e;
+}
+
+svg:hover #recta3 {
+  fill: #fe5d63;
+}
