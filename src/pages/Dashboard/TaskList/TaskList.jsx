@@ -75,6 +75,7 @@ const TaskList = ({currentFilter, searchQuery}) => {
         };
 
         fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser, showForm, reloadList, currentFilter]); // Actualizar cuando se cree nueva tarea
 
     // Paginación

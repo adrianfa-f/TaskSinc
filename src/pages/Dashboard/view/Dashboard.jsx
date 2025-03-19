@@ -5,13 +5,11 @@ import Sidebar from '../Sidebar/Sidebar';
 import TaskList from '../TaskList/TaskList';
 import TaskDetail from '../TaskDetails/TaskDetail'
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
 import { useState } from 'react';
 
 const Dashboard = () => {
     const [searchParams] = useSearchParams();
     const userId = searchParams.get('userId')
-    const { currentUser } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [currentFilter, setCurrentFilter] = useState({
         type: 'all',

@@ -53,6 +53,8 @@ export const getTaskByUser = async (userId, filter = {}) => {
                     q = query(q, where("dueDate", ">=", now))
                 }
                 break;
+            default:
+                break;
         }
 
         if (filter.sortBy) {
