@@ -67,7 +67,7 @@ const TaskDetail = () => {
     if (!task) return <div className="p-6">Cargando...</div>;
 
     return (
-        <div className={`p-4 md:p-6 max-w-3xl mx-auto h-[calc(100vh-100px)] overflow-y-auto ${isHidden?"fixed top-0 z-30":""}`}>
+        <div className={`p-4 md:p-6 max-w-3xl mx-auto h-[calc(100vh-100px)] overflow-y-auto ${isHidden?"fixed top-0":""}`}>
             <button
                 onClick={() => navigate(-1)}
                 className="mb-4 px-3 py-1 md:px-5 md:py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1 text-sm"

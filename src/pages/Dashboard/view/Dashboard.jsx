@@ -33,7 +33,7 @@ const Dashboard = () => {
                 <Sidebar setCurrentFilter={setCurrentFilter} isMobileOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}/>
 
                 {/* Lista de tareas */}
-                <main className='flex-1 bg-gray-100 px-4  md:px-6 py-3 overflow-auto md:ml-64 relative z-40'>
+                <main className='flex-1 bg-gray-100 px-4  md:px-6 py-3 overflow-auto md:ml-64'>
                 <Routes>
                     <Route index element={<TaskList currentFilter={currentFilter} searchQuery={searchQuery}/>}/>
                     <Route path="tasks/:taskId" element={<TaskDetail/>}/>
