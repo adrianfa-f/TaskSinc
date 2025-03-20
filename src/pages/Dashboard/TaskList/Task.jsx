@@ -51,9 +51,9 @@ const Task = ({ task, onClick }) => {
     return (
         <div className="group relative bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
             {/* Contenido principal */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 flex-wrap">
                 {/* Checkbox y prioridad */}
-                <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-row items-center gap-2 flex-shrink-0">
                     <button onClick={() => handleToggleComplete()} className="mt-1">
                         <FiCheckSquare className={`h-5 w-5 ${isCompleted ? 'text-green-500' : 'text-gray-300'}`} />
                     </button>
@@ -61,20 +61,19 @@ const Task = ({ task, onClick }) => {
                 </div>
 
                 {/* Texto de la tarea */}
-                <div className='flex-1'>
-                    <div className="flex flex-row">
+                <div className='flex-1 min-w-[200px]'>
+                    <div className="flex flex-col md:flex-row gap-2">
                         <h3 className={`font-medium w-48 truncate ${isCompleted ? 'line-through text-gray-400' : ''}`}>
                             {task.title}
                         </h3>
-                        <p className="text-sm truncate text-gray-500 mt-1 max-w-xl">
+                        <p className="text-sm truncate text-gray-500 flex-1">
                             {task.description}
                         </p>
                     </div>
                 </div>
 
                 {/* Fecha - Visible normalmente */}
-                {/* agegar task.formatDate a las dates cuando se ponga en marcha la lectura */}
-                <div className="text-sm text-gray-500 whitespace-nowrap">
+                <div className="text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
                     <span>{task.dueDate}</span>
                 </div>
             </div>

@@ -5,6 +5,7 @@ import { getTaskById, updateTask } from '../../../service/TaskService/TaskServic
 import { Task } from '../../../models/Task';
 import { FiArrowLeft, FiFile, FiPaperclip, FiMapPin, FiUploadCloud, FiSave } from 'react-icons/fi';
 import { FaExclamationCircle } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 const TaskDetail = () => {
     const { taskId } = useParams();
@@ -15,6 +16,8 @@ const TaskDetail = () => {
     const [isEditing, setIsEditing] = useState(searchParams.get('edit') === 'true');
     const [formData, setFormData] = useState({});
     const [error, setError] = useState('');
+    const location = useLocation()
+    const isHidden = location.pathname.includes("/dashboard/tasks")&&window.innerWidth<375
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -22,12 +25,15 @@ const TaskDetail = () => {
                 const taskData = await getTaskById(taskId, currentUser.uid);
                 setTask(new Task(taskData));
                 setFormData(taskData);
+                
             } catch (error) {
-                setError('Error cargando la tarea');
+                setError('Error cargando la tarea: ', error);
             }
         };
 
-        if (taskId && currentUser) fetchTask();
+        if (taskId && currentUser) {
+            fetchTask()
+        };
     }, [taskId, currentUser]);
 
     const handleLocationChange = (e) => {
@@ -61,10 +67,10 @@ const TaskDetail = () => {
     if (!task) return <div className="p-6">Cargando...</div>;
 
     return (
-        <div className="p-6 max-w-3xl mx-auto h-[calc(100vh-160px)] overflow-y-auto">
+        <div className={`p-4 md:p-6 max-w-3xl mx-auto h-[calc(100vh-100px)] overflow-y-auto ${isHidden?"fixed top-0 z-30":""}`}>
             <button
                 onClick={() => navigate(-1)}
-                className="mb-4 px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1 text-sm"
+                className="mb-4 px-3 py-1 md:px-5 md:py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1 text-sm"
             >
                 <FiArrowLeft className="inline-block" />
                 Volver a la lista
@@ -79,7 +85,7 @@ const TaskDetail = () => {
                     </div>
     
                     {/* Campos Principales */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
                             <input
@@ -192,13 +198,13 @@ const TaskDetail = () => {
                                 className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
                             >
                                 <FiSave className="inline-block" />
-                                Guardar Cambios
+                                Guardar
                             </button>
                         </div>
                     </div>
                 </form>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                     {/* Encabezado */}
                     <div className="pb-4 border-b">
                         <h1 className="text-2xl font-bold text-gray-800">{task.title}</h1>

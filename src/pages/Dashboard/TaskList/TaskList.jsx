@@ -107,6 +107,8 @@ const TaskList = ({currentFilter, searchQuery}) => {
     if (!loading && filteredTasks.length === 0) {
         return (
             <div className="p-8 text-center max-w-md mx-auto mt-8">
+                <NewTaskButton onClick={() => setShowForm(true)} />
+                {showForm && <TaskForm onClose={() => setShowForm(false)} />}
                 <div className="inline-block mb-4 text-blue-400">
                     <svg 
                         xmlns="http://www.w3.org/2000/svg" 
@@ -160,18 +162,20 @@ const TaskList = ({currentFilter, searchQuery}) => {
                 <div className="flex justify-center space-x-12 mt-4 ">
                     <button
                         onClick={loadPreviousTasks}
+                        disabled={currentPage === 1}
                         className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                     >
-                        Pagina Anterior
+                        Anterior
                     </button>
                     <label className="bg-gray-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md">
-                        {currentPage}-10
+                        {currentPage}-{Math.ceil(filteredTasks.length/tasksPerPage)}
                     </label>
                     <button
                         onClick={loadMoreTasks}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        disabled={currentPage*tasksPerPage>=filteredTasks.length}
+                        className="px-4 py-2 z-20 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                     >
-                        Siguiente Pagina
+                        Siguiente
                     </button>
                 </div>
             )}

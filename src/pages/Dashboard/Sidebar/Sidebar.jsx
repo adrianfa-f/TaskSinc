@@ -1,10 +1,17 @@
 import { useState } from "react";
 
-const Sidebar = ({setCurrentFilter}) => {
+const Sidebar = ({setCurrentFilter, isMobileOpen, toggleMobileMenu}) => {
     const [isSelected, setIsSelected] = useState("Todas");
     const [subFilter, setSubFilter] = useState('');
+
+    const closeByWidth = (type) => {
+        if (window.innerWidth < 375 && type !== "Vencimiento" && type !== "Importantes") {
+            toggleMobileMenu()
+        }
+    }
     
     const handleMainFilter = (type, sortBy = "creationDate", sortOrder = "desc") => {
+        closeByWidth(type)
         setIsSelected(type);
         setSubFilter('');
         setCurrentFilter({
@@ -16,6 +23,7 @@ const Sidebar = ({setCurrentFilter}) => {
     }
 
     const handlePriorityFilter = (priority) => {
+        closeByWidth()
         setSubFilter(priority);
         setCurrentFilter({
             type: 'priority',
@@ -26,6 +34,7 @@ const Sidebar = ({setCurrentFilter}) => {
     };
 
     const handleDueDtaeFilter = (filterType) => {
+        closeByWidth()
         setSubFilter(filterType);
         setCurrentFilter({
             type: 'dueDate',
@@ -36,7 +45,9 @@ const Sidebar = ({setCurrentFilter}) => {
     }
 
     return (
-        <aside className="w-64 bg-white border-r flex flex-col ">
+        <aside className={` fixed md:static z-20 h-full transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r flex flex-col`}>
+            
             <div className="pr-4 space-y-1 ">
                 <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="Todas" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("Todas")}>Todas las tareas</button>
                 <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="Importantes" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("Importantes")}>Prioridad</button>

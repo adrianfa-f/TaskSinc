@@ -105,7 +105,7 @@ const ProfileMenu = () => {
 
       {/* Menú desplegable */}
       {isMenuOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100">
+        <div className="absolute right-0 mt-2 z-[60] w-64 bg-white rounded-xl shadow-2xl border border-gray-100">
           <div className="p-4 border-b">
             <div className="mb-4">
               {/* Sección de foto con input oculto */}

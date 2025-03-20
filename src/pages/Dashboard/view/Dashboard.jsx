@@ -11,6 +11,7 @@ const Dashboard = () => {
     const [searchParams] = useSearchParams();
     const userId = searchParams.get('userId')
     const [searchQuery, setSearchQuery] = useState('');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [currentFilter, setCurrentFilter] = useState({
         type: 'all',
         value: null,
@@ -18,20 +19,24 @@ const Dashboard = () => {
         sortOrder: 'desc'
     });
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen)
+    }
+
     return (
         <div className='h-screeen flex flex-col'>
             {/* Header */}
-            <Header userId={userId} onSearch={setSearchQuery}/>
+            <Header userId={userId} onSearch={setSearchQuery} toggleMobileMenu={toggleMobileMenu}/>
 
-            <div className='flex flex-1 overflow-hidden'>
+            <div className='flex flex-1 md:flex-row overflow-hidden'>
                 {/* Sidebar */}
-                <Sidebar setCurrentFilter={setCurrentFilter}/>
+                <Sidebar setCurrentFilter={setCurrentFilter} isMobileOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}/>
 
                 {/* Lista de tareas */}
-                <main className='flex-1 bg-gray-100 px-6 py-3 overflow-auto'>
+                <main className='flex-1 bg-gray-100 px-4  md:px-6 py-3 overflow-auto md:ml-64 relative z-40'>
                 <Routes>
-                    <Route index element={<TaskList currentFilter={currentFilter} searchQuery={searchQuery}/>}></Route>
-                    <Route path="tasks/:taskId" element={<TaskDetail />}></Route>
+                    <Route index element={<TaskList currentFilter={currentFilter} searchQuery={searchQuery}/>}/>
+                    <Route path="tasks/:taskId" element={<TaskDetail/>}/>
                 </Routes>
                 </main>
             </div>

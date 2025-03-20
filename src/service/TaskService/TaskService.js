@@ -33,7 +33,6 @@ export const getTaskById = async (taskId, userId) => {
 export const getTaskByUser = async (userId, filter = {}) => {
     try {
         let q = query(collection(db, "users", userId, "tasks"));
-        console.log("el filtro aplicado es: ", filter)
 
         switch(filter.type) {
             case 'priority':
