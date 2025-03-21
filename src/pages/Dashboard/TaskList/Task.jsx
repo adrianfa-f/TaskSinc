@@ -69,7 +69,7 @@ const Task = ({ task, onClick }) => {
     }
 
     return (
-        <div className="group relative z-20 bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
+        <div className="group relative z-10 bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
             {/* Contenido principal */}
             <div className="flex items-start gap-3 flex-wrap">
                 {/* Checkbox y prioridad */}
@@ -81,7 +81,7 @@ const Task = ({ task, onClick }) => {
                 </div>
 
                 {/* Texto de la tarea */}
-                <div className='flex-1 min-w-[200px]'>
+                <div className='flex-1 min-w-[200px] pr-6'>
                     <div className="flex flex-col md:flex-row gap-2">
                         <h3 className={`font-medium w-48 truncate ${isCompleted ? 'line-through text-gray-400' : ''}`}>
                             {task.title}
