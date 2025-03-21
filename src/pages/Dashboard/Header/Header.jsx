@@ -16,7 +16,7 @@ const Header = ({onSearch, toggleMobileMenu}) => {
     }
 
     return (
-        <header className={`bg-white shadow-sm py-4 px-6  flex items-center justify-between sticky top-0 transition-transform duration-500 ${
+        <header className={`bg-white shadow-sm py-4 px-6  flex items-center justify-between transition-transform duration-500 ${
         isHidden ? "opacity-0 h-0 py-0 -mt-4" : "opacity-100 h-auto"}`}>
             {/* Input de búsqueda y logo */}
             <div className=" hidden md:flex items-center space-x-4">

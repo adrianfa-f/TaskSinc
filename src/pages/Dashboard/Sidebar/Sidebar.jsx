@@ -45,7 +45,7 @@ const Sidebar = ({setCurrentFilter, isMobileOpen, toggleMobileMenu}) => {
     }
 
     return (
-        <aside className={` fixed md:static z-20 h-full transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        <aside className={` fixed md:static z-30 h-full transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r flex flex-col`}>
             
             <div className="pr-4 space-y-1 ">
