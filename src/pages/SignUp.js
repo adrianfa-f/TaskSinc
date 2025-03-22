@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {auth, db} from '../firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification  } from 'firebase/auth';
 import Header from "../components/Header";
+import PasswordStrength from '../components/PasswordStrength';
 import {doc, setDoc} from 'firebase/firestore';
-import {User} from "../models/User"
+import {User} from "../models/User";
 
 const SignUp = () => {
     const [userName, setUserName] = useState('');
@@ -26,8 +27,14 @@ const SignUp = () => {
                 /* Actualizar el displayName */
                 const user = userCredentials.user
                 await updateProfile(user, {displayName: userName});
-                await sendEmailVerification(user);
+                await sendEmailVerification(user, 
+                    {
+                        url: `${window.location.origin}/login`
+                    }
+                );
 
+                setMessage("Por favor verifica tu correo electrónico. Revisa tu bandeja de entrada.")
+                
                 /* Crear una instancia de User */
                 const newUser = new User({
                     email: user.email,
@@ -37,7 +44,7 @@ const SignUp = () => {
                 await setDoc(doc(db, "users", user.uid), 
                     newUser.toFirestore()
                 );
-                setMessage("Se le ha enviado un correo, virfiquelo.")
+                
                 
             } catch (error) {
                 console.error('Error: ', error);
@@ -75,32 +82,24 @@ const SignUp = () => {
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password
+                        Contraseña
                         </label>
                         <input
                         type='password' value={password} onChange={e => setPassword(e.target.value)} placeholder='Password'
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
+                        <PasswordStrength password={password}/>
                     </div>
-                    {/* <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
-                        Confirm Password
-                        </label>
-                        <input
-                        type="password"
-                        id="confirm-password"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                    </div> */}
                     <p className="text-red-500 text-center text-sm font-bold mt-2">
                     {message}
                     </p>
                     <div className="flex items-center justify-center">
                         <button
                         type="submit"
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all duration-300 w-32"
+                        disabled={isSubmitting}
+                        className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all duration-300 w-32 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                        {isSubmitting ? "Creando cuenta..." : "Signup"}
+                        {isSubmitting ? "Creando cuenta..." : "Registrarse"}
                         </button>
                     </div>
                 </form>

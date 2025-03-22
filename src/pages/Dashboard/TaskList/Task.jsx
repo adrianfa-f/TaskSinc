@@ -31,7 +31,12 @@ const Task = ({ task, onClick }) => {
         return () => window.removeEventListener('scroll', closeOnScroll);
     }, []);
 
-    useClickOutside(menuRef, () => setShowMobileMenu(false));
+    useClickOutside(menuRef, () =>{ 
+        setShowMobileMenu(false);
+        if (showDeleteConfirm) {
+            setShowDeleteConfirm(false)
+        }
+    });
 
     useEffect(() => {
         setIsCompleted(task.complete)
@@ -69,7 +74,7 @@ const Task = ({ task, onClick }) => {
     }
 
     return (
-        <div className="group relative z-10 bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
+        <div className="group relative bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
             {/* Contenido principal */}
             <div className="flex items-start gap-3 flex-wrap">
                 {/* Checkbox y prioridad */}
@@ -170,7 +175,7 @@ const Task = ({ task, onClick }) => {
             )}
 
             {showDeleteConfirm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[999]" onClick={(e) => e.stopPropagation()}>
                     <div className="bg-white rounded-lg p-6 max-w-md w-full">
                         <div className="flex items-center gap-3 mb-4">
                             <FiAlertTriangle className="text-red-500 h-8 w-8" />

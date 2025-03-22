@@ -5,7 +5,7 @@ const Sidebar = ({setCurrentFilter, isMobileOpen, toggleMobileMenu}) => {
     const [subFilter, setSubFilter] = useState('');
 
     const closeByWidth = (type) => {
-        if (window.innerWidth < 375 && type !== "Vencimiento" && type !== "Importantes") {
+        if (window.innerWidth < 385 && type !== "Vencimiento" && type !== "Importantes") {
             toggleMobileMenu()
         }
     }

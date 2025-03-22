@@ -13,7 +13,7 @@ const TaskForm = ({ onClose }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: 'Sin descripción',
-        dueDate: '',
+        dueDate: new Date().toISOString().split("T")[0],
         priority: 'medium',
         attachments: [],
         location: null
@@ -55,12 +55,12 @@ const TaskForm = ({ onClose }) => {
     };
 
     // Estilos mejorados
-    const inputStyle = "w-full p-3 rounded-lg border border-gray-200 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all";
+    const inputStyle = "w-full mt-2 p-2 rounded-lg border border-gray-200 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all";
     const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div ref={formRef} className="bg-gray-50 rounded-xl p-6 w-full max-w-md mx-4 shadow-xl border border-gray-100">
+            <div ref={formRef} className="bg-gray-50 rounded-xl p-6 w-full max-w-md mx-4 shadow-xl border border-gray-100 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">➕ Nueva Tarea</h2>
                     <button 
@@ -73,13 +73,13 @@ const TaskForm = ({ onClose }) => {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Sección horizontal para título y fecha */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div>
                             <label className={labelStyle}>Título *</label>
                             <input type="text" required className={`${inputStyle}`} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Revisar informe trimestral"/>
                         </div>
                         
-                        <div>
+                        <div className="bg-white p-4 rounded-xl border">
                             <label className={labelStyle}>
                                 <FiCalendar className="inline mr-2 -mt-1" />
                                 Fecha límite *
@@ -89,20 +89,20 @@ const TaskForm = ({ onClose }) => {
                     </div>
 
                     {/* Prioridad con nuevo diseño */}
-                    <div>
-                        <label className={labelStyle}>📌 Prioridad</label>
-                        <div className="grid grid-cols-3 gap-2">
-                            <button type="button" onClick={() => setFormData({...formData, priority:"low"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "low" ? 'ring-2 ring-green-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                    <div className="bg-white p-4 rounded-xl border">
+                        <label className={labelStyle}>📌 Nivel de Prioridad</label>
+                        <div className="grid grid-cols-3 gap-2 mt-2">
+                            <button type="button" onClick={() => setFormData({...formData, priority:"low"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "low" ? 'border-2 border-green-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "low" ? 'text-green-700' : 'text-gray-600'}`}>
                                     Baja
                                 </span>
                             </button>
-                            <button type="button" onClick={() => setFormData({...formData, priority: "medium"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "medium" ? 'ring-2 ring-yellow-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                            <button type="button" onClick={() => setFormData({...formData, priority: "medium"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "medium" ? 'border-2 border-yellow-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "medium" ? 'text-yellow-700' : 'text-gray-600'}`}>
                                     Media
                                 </span>
                             </button>
-                            <button type="button" onClick={() => setFormData({...formData, priority: "high"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "high" ? 'ring-2 ring-red-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                            <button type="button" onClick={() => setFormData({...formData, priority: "high"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "high" ? 'border-2 border-red-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "high" ? 'text-red-700' : 'text-gray-600'}`}>
                                     Alta
                                 </span>

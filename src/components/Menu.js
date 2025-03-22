@@ -9,7 +9,7 @@ const Menu = ({ isOpen, toggleMenu }) => {
         >       
             <div className="w-64 bg-gray-900 p-4">
                 <nav className="space-y-4">
-                    <Link className="block text-white hover:text-gray-400" to="/" onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>Inicio</Link>
+                    <Link className="block text-white hover:text-gray-400" to="/" onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>Pagina Principal</Link>
                     <MenuLink className="block text-white hover:text-gray-400" to="feature">Caracteristicas</MenuLink>
                     <MenuLink className="block text-white hover:text-gray-400" to="about">Sobre nosotros</MenuLink>
                     <Link className="block text-white hover:text-gray-400" to="/signup">Registro</Link>
