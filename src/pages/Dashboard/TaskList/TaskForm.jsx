@@ -76,7 +76,7 @@ const TaskForm = ({ onClose }) => {
                     <div className="grid grid-cols-1 gap-4">
                         <div>
                             <label className={labelStyle}>Título *</label>
-                            <input type="text" required className={`${inputStyle}`} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Revisar informe trimestral"/>
+                            <input type="text" required className={`${inputStyle}`} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Nombre de la tarea"/>
                         </div>
                         
                         <div className="bg-white p-4 rounded-xl border">

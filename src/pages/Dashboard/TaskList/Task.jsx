@@ -73,6 +73,15 @@ const Task = ({ task, onClick }) => {
         setShowDeleteConfirm(false);
     }
 
+    const formatDueDate = (dateString) => {
+        const today = new Date().setHours(0,0,0,0);
+        const dueDate = new Date(dateString).setHours(0,0,0,0);
+        const diffDays = Math.round((dueDate - today)/(1000*60*60*24));
+        if (diffDays === -1) return 'Hoy';
+        if (diffDays === 0) return 'Mañana';
+        return dateString
+    };
+
     return (
         <div className="group relative bg-white px-4 py-2 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all duration-200" onClick={(e) => {if (!e.target.closest('button')) {navigate(`/dashboard/tasks/${task.id}`)}}} >
             {/* Contenido principal */}
@@ -99,7 +108,7 @@ const Task = ({ task, onClick }) => {
 
                 {/* Fecha - Visible normalmente */}
                 <div className="text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
-                    <span>{task.dueDate}</span>
+                    <span>{formatDueDate(task.dueDate)}</span>
                 </div>
             </div>
             
