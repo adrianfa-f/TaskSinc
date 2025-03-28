@@ -19,7 +19,7 @@ export const handler = async (event) => {
         });
 
         // 4. Guardar archivo
-        const blobId = `${Date.now()}-${file.filename}`;
+        const blobId = encodeURIComponent(`${Date.now()}-${file.filename}`);
             await store.set(blobId, file.content, {
                 metadata: { type: file.contentType }
             });
