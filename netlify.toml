@@ -7,11 +7,9 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, DELETE"
-    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "GET, POST, DELETE, OPTIONS"
 
 [dev]
   framework = "create-react-app"
   targetPort = 3000
-  edgeFunctions = false
   autoLaunch = false

@@ -1,4 +1,3 @@
-// netlify/functions/blobs/upload.js
 import { getStore } from "@netlify/blobs";
 import { parse } from 'lambda-multipart-parser';
 
@@ -16,16 +15,14 @@ export const handler = async (event) => {
             name: `${userId}-${type}`,
             siteID: process.env.NETLIFY_BLOBS_SITE_ID,
             token: process.env.NETLIFY_BLOBS_TOKEN,
+            apiURL: "https://api.netlify.com/api/v1"
         });
 
         // 4. Guardar archivo
-        const blobId = Date.now().toString();
-        await store.set(blobId, file.content, {
-            metadata: { 
-                type: file.contentType,
-                name: file.filename 
-            }
-        });
+        const blobId = `${Date.now()}-${file.filename}`;
+            await store.set(blobId, file.content, {
+                metadata: { type: file.contentType }
+            });
 
         // 5. Responder URL pública
         return {

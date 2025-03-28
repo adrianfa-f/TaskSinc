@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@netlify/blobs": "^8.1.1",
+    "@netlify/blobs": "^8.1.2",
     "@phosphor-icons/react": "^2.1.7",
     "@react-google-maps/api": "^2.20.6",
     "@testing-library/dom": "^10.4.0",
