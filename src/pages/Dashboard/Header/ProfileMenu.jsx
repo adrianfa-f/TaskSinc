@@ -60,7 +60,7 @@ const ProfileMenu = () => {
       formData.append("file", file);
   
       const response = await fetch(
-        `/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
+        `/.netlify/functions/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
         {
           method: "POST",
           body: formData,
@@ -99,7 +99,7 @@ const ProfileMenu = () => {
           {userData?.photoURL ? (
             <img 
               src={userData.photoURL.startsWith("blob:") 
-              ? `/functions/blobs/get?userId=${currentUser.uid}&type=profile&blobId=${userData.photoURL.split(":")[3]}`
+              ? `/.netlify/functions/get?userId=${currentUser.uid}&type=profile&blobId=${userData.photoURL.split(":")[3]}`
               : userData.photoURL
             }
               className="h-16 w-16 rounded-full object-cover cursor-pointer"
