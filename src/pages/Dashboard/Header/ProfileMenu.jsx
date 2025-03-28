@@ -60,7 +60,7 @@ const ProfileMenu = () => {
       formData.append("file", file);
   
       const response = await fetch(
-        `https://tasksinc.netlify.app/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
+        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
         {
           method: "POST",
           body: formData,
