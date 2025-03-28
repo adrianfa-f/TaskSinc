@@ -62,7 +62,7 @@ const ProfileMenu = () => {
       formData.append("file", file);
   
       const response = await fetch(
-        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
+        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`,
         {
           method: "POST",
           body: formData,
@@ -71,8 +71,8 @@ const ProfileMenu = () => {
   
       const { publicUrl } = await response.json();
   
-      await UserService.updateUser(currentUser.uid, { photoURL: publicUrl });
-      setUserData(prev => ({ ...prev, photoURL: publicUrl }));
+      await UserService.updateUser(currentUser.uid, { photoURL: `https://tasksinc.netlify.app${publicUrl}` });
+      setUserData(prev => ({ ...prev, photoURL: `https://tasksinc.netlify.app${publicUrl}` }));
       
     } catch (error) {
       console.error('Error subiendo imagen:', error);
