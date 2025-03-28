@@ -1,0 +1,15 @@
+[build]
+  command = "npm run build"  
+  publish = "build/"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/blobs/:splat"
+  status = 200 
+
+[dev]
+  framework = "create-react-app"
+  targetPort = 3000
+  edgeFunctions = false
+  autoLaunch = false

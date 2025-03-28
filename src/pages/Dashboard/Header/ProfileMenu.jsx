@@ -58,16 +58,25 @@ const ProfileMenu = () => {
     if (!file) return;
 
     try {
-      // Aquí deberías implementar la subida del archivo a Firebase Storage
-      // Por ahora usaremos una URL local como ejemplo
-      const url = URL.createObjectURL(file);
+      const formData = new FormData();
+      formData.append("file", file);
+  
+      const response = await fetch(
+        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+  
+      const { publicUrl } = await response.json();
+  
+      await UserService.updateUser(currentUser.uid, { photoURL: publicUrl });
+      setUserData(prev => ({ ...prev, photoURL: publicUrl }));
       
-      await UserService.updateUser(currentUser.uid, {
-        photoURL: url
-      });
-      setUserData(prev => ({ ...prev, photoURL: url }));
     } catch (error) {
-      console.error('Error actualizando foto:', error);
+      console.error('Error subiendo imagen:', error);
+      alert('Error al subir la imagen');
     }
   };
 
@@ -91,8 +100,8 @@ const ProfileMenu = () => {
         >
           {userData?.photoURL ? (
             <img 
-              src={userData.photoURL} 
-              className="h-12 w-12 object-cover"
+              src={userData.photoURL.startsWith("blob:") ? `/.netlify/functions/blobs/get?userId=$ {currentUser.uid}&type=profile&blobId=${userData.photoURL.split(":")[3]}` : userData.photoURL}
+              className="h-16 w-16 rounded-full object-cover cursor-pointer"
               alt="Avatar"
             />
           ) : (

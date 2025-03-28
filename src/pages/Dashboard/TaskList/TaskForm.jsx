@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { FiX, FiCalendar, FiPaperclip, FiMapPin } from 'react-icons/fi';
+import { FiX, FiCalendar, FiMapPin } from 'react-icons/fi';
 import { useAuth } from '../../../context/AuthContext';
 import { Task } from '../../../models/Task';
 import { createTask } from '../../../service/TaskService/TaskService';
@@ -9,6 +9,8 @@ const TaskForm = ({ onClose }) => {
     const { currentUser } = useAuth();
     const formRef = useRef();
     useClickOutside(formRef, onClose);
+    const [attachments, setAttachments] = useState([]);
+    const [uploading, setUploading] = useState(false);
     
     const [formData, setFormData] = useState({
         title: '',
@@ -34,6 +36,52 @@ const TaskForm = ({ onClose }) => {
         }
     };
 
+    const handleFileUpload = async (files) => {
+        setUploading(true);
+        try {
+            const uploadPromises = Array.from(files).map(async    (file) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                
+                const response = await fetch(
+                    `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=attachments`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+                const { publicUrl } = await response.json();
+                return {
+                    name: file.name,
+                    url: publicUrl,
+                    type: file.type.split('/')[0]
+                };
+            });
+
+            const newAttachments = await Promise.all(uploadPromises);
+            setAttachments([...attachments, ...newAttachments]);
+
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDeleteAttachment = async (attachmentUrl) => {
+        try {
+            const [,, userId, type, blobId] = attachmentUrl.split(/[:/]/);
+            
+            await fetch(
+                `/api/blobs/delete?userId=${userId}&type=${type}&blobId=${blobId}`,
+                { method: "DELETE" }
+            );
+
+            setAttachments(attachments.filter(a => a.url !== attachmentUrl));
+        } catch (error) {
+            console.error("Error eliminando archivo:", error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -41,7 +89,7 @@ const TaskForm = ({ onClose }) => {
         try {
             // Crear instancia del modelo Task
             const newTask = new Task({
-                ...formData,
+                ...formData, attachments,
                 dueDate: new Date(formData.dueDate).toISOString().split('T')[0]
             });
 
@@ -92,7 +140,7 @@ const TaskForm = ({ onClose }) => {
                     <div className="bg-white p-4 rounded-xl border">
                         <label className={labelStyle}>📌 Nivel de Prioridad</label>
                         <div className="grid grid-cols-3 gap-2 mt-2">
-                            <button type="button" onClick={() => setFormData({...formData, priority:"low"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "low" ? 'border-2 border-green-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                            <button type="button" onClick={() => setFormData({...formData, priority:"low"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "low" ? 'border-2 border-green-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "low" ? 'text-green-700' : 'text-gray-600'}`}>
                                     Baja
                                 </span>
@@ -124,23 +172,43 @@ const TaskForm = ({ onClose }) => {
 
                     {/* Sección horizontal para adjuntos y ubicación */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className={labelStyle}>
-                                <FiPaperclip className="inline mr-2 -mt-1" />
-                                Adjuntos
+                        <div className="mb-6">
+                            <label className="block text-sm   font-medium mb-2">
+                                Archivos Adjuntos
                             </label>
-                            <label className="cursor-pointer block">
-                                <div className={`${inputStyle} py-2 text-gray-600 flex items-center justify-center hover:bg-blue-50 transition-colors`}>
-                                    <FiPaperclip className="mr-2" />
-                                    Seleccionar archivos
-                                </div>
-                                <input
-                                    type="file"
-                                    multiple
-                                    className="hidden"
-                                    onChange={(e) => setFormData({...formData, attachments: [...e.target.files]})}
-                                />
+
+                            {/* Input oculto para seleccionar     archivos */}
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) => handleFileUpload(e.target.files)}
+                                id="file-upload"
+                                className="hidden"
+                            />
+
+                            {/* Botón para activar el input */}
+                            <label
+                                htmlFor="file-upload"
+                                className="cursor-pointer inline-block px-4 py-2 bg-blue-500  text-white rounded-lg hover:bg-blue-600"
+                            >
+                                {uploading ? 'Subiendo...' : 'Seleccionar Archivos'}
                             </label>
+
+                            {/* Lista de archivos subidos */}
+                            <div className="mt-3 space-y-2">
+                                {attachments.map((attachment, index)    => (
+                                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                                        <span className="truncate">   {attachment.name}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteAttachment(attachment.url)}
+                                            className="text-red-500 hover:text-red-700"
+                                        >
+                                            <FiX className="h-5 w-5" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <div>

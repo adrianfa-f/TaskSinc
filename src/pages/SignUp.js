@@ -47,6 +47,9 @@ const SignUp = () => {
                 
                 
             } catch (error) {
+                if (error.code === "auth/email-already-in-use") {
+                    setMessage("Este correo ya esta en uso.")
+                }
                 console.error('Error: ', error);
             } finally {
                 setIsSubmitting(false)
@@ -90,9 +93,12 @@ const SignUp = () => {
                         />
                         <PasswordStrength password={password}/>
                     </div>
-                    <p className="text-red-500 text-center text-sm font-bold mt-2">
-                    {message}
-                    </p>
+                    <div className={`bg-gray-50 rounded-lg shadow-md p-2 mb-2 ${message === ""? "hidden": ""}`}>
+                        <p className="text-ray-700 text-center text-sm font-bold">
+                        {message}
+                        </p>
+                    </div>
+                    
                     <div className="flex items-center justify-center">
                         <button
                         type="submit"

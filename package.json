@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@netlify/blobs": "^8.1.1",
     "@phosphor-icons/react": "^2.1.7",
     "@react-google-maps/api": "^2.20.6",
     "@testing-library/dom": "^10.4.0",
@@ -11,11 +12,12 @@
     "@testing-library/user-event": "^13.5.0",
     "firebase": "^11.3.1",
     "framer-motion": "^12.4.4",
+    "lambda-multipart-parser": "^1.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "recharts": "^2.15.1",
     "web-vitals": "^2.1.4"
   },
@@ -23,6 +25,7 @@
     "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind-output.css --watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "dev": "netlify dev",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
