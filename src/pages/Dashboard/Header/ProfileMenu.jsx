@@ -6,8 +6,6 @@ import { FiEdit, FiLogOut, FiCheck, FiX } from 'react-icons/fi';
 import { User } from '../../../models/User';
 import {useClickOutside} from '../../../Hooks/useClickOutside'
 
-//Falta Comenzar con la Store de firebase para poder subir imagenes, por Ahora la imagen del perfil es obtenida localmente.
-
 const ProfileMenu = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
@@ -62,7 +60,7 @@ const ProfileMenu = () => {
       formData.append("file", file);
   
       const response = await fetch(
-        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
+        `https://tasksinc.netlify.app/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=profile`, // Usar ruta absoluta
         {
           method: "POST",
           body: formData,
