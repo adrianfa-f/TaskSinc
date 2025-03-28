@@ -27,11 +27,15 @@ export const handler = async (event) => {
         // 5. Responder URL pública
         return {
             statusCode: 200,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
             body: JSON.stringify({
             publicUrl: `/.netlify/functions/blobs/get?userId=${userId}&type=${type}&blobId=${blobId}`
             })
         };
     } catch (error) {
-        return { statusCode: 500, body: error.message };
+        return { statusCode: 500, headers: { "Access-Control-Allow-Origin": "*" }, body: error.message };
     }
 };
