@@ -13,15 +13,11 @@ export const handler = async (event) => {
 
         const blob = await store.get(blobId, { type: "blob" });
 
-        if (!blob) {
-            return { statusCode: 404, body: "Imagen no encontrada" };
-        }
-
         return {
             statusCode: 200,
             headers: {
-              "Content-Type": "image/*", // Tipo dinámico
-              "Cache-Control": "public, max-age=31536000" // Cache 1 año
+                "Content-Type": blob.type,
+                "Access-Control-Allow-Origin": "https://tasksinc.netlify.app"
             },
             body: blob.toString("base64"),
             isBase64Encoded: true

@@ -3,6 +3,13 @@
   publish = "build/"
   functions = "netlify/functions"
 
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://tasksinc.netlify.app"
+    Access-Control-Allow-Methods = "GET, POST, DELETE"
+    Access-Control-Allow-Headers = "Content-Type"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/blobs/:splat"
