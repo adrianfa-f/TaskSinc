@@ -3,6 +3,7 @@ import { getStore } from "@netlify/blobs";
 
 export const handler = async (event) => {
     try {
+        console.log("inicio del get")
         const { userId, type, blobId } = event.queryStringParameters;
         console.log("Parámetros recibidos:", { userId, type, blobId });
 
