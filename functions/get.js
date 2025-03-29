@@ -12,22 +12,25 @@ export const handler = async (event) => {
             token: process.env.NETLIFY_BLOBS_TOKEN,
         });
 
-        const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
-        console.log("Blob obtenido:", blob ? blob.type : "No se encontró blob");
+        const decodedBlobId = decodeURIComponent(blobId);
+        const blob = await store.get(decodedBlobId, { type: "blob" });
+        console.log("Blob obtenido:", blob);
         let contentType = blob.type;
         if (contentType === "binary/octet-stream") {
             const lowerBlobId = blobId.toLowerCase();
             if (lowerBlobId.endsWith('.png')) {
                 contentType = 'image/png';
             } else if (
-                lowerBlobId.endsWith('.jfif') ||
                 lowerBlobId.endsWith('.jpg') ||
-                lowerBlobId.endsWith('.jpeg')
+                lowerBlobId.endsWith('.jpeg') ||
+                lowerBlobId.endsWith('.jfif')
             ) {
                 contentType = 'image/jpeg';
             } else if (lowerBlobId.endsWith('.gif')) {
                 contentType = 'image/gif';
-            } // Puedes agregar más condiciones según tus necesidades
+            } else {
+                contentType = 'application/octet-stream'; // fallback
+            }
         }
 
         return {
