@@ -32,7 +32,7 @@ export const handler = async (event) => {
                 "Access-Control-Allow-Origin": "*"
             },
             body: JSON.stringify({
-            publicUrl: `/.netlify/functions/blobs/get?userId=${userId}&type=${type}&blobId=${blobId}`
+            publicUrl: `/.netlify/functions/get?userId=${userId}&type=${type}&blobId=${blobId}`
             })
         };
     } catch (error) {
