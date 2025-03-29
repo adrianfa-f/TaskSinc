@@ -1,4 +1,3 @@
-// netlify/functions/blobs/get.js
 import { getStore } from "@netlify/blobs";
 
 export const handler = async (event) => {
@@ -15,11 +14,15 @@ export const handler = async (event) => {
 
         const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
         console.log("Blob obtenido:", blob ? blob.type : "No se encontró blob");
+        let contentType = blob.type;
+        if (contentType === "binary/octet-stream"&& blobId.toLowerCase().endsWith(".jfif")) {
+            contentType = "image/jpeg";
+        }
 
         return {
             statusCode: 200,
             headers: {
-                "Content-Type": blob.type,
+                "Content-Type": contentType,
                 "Access-Control-Allow-Origin": "https://tasksinc.netlify.app"
             },
             body: blob.toString("base64"),

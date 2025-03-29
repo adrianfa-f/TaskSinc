@@ -20,8 +20,9 @@ export const handler = async (event) => {
 
         // 4. Guardar archivo
         const blobId = encodeURIComponent(`${Date.now()}-${file.filename}`);
+        const mimeType = file.contentType === "binary/octet-stream" ? "image/jpeg" : file.contentType;
             await store.set(blobId, file.content, {
-                metadata: { type: file.contentType }
+                metadata: { type: mimeType }
             });
 
         // 5. Responder URL pública
