@@ -4,6 +4,7 @@ import { getStore } from "@netlify/blobs";
 export const handler = async (event) => {
     try {
         const { userId, type, blobId } = event.queryStringParameters;
+        console.log("Parámetros recibidos:", { userId, type, blobId });
 
         const store = getStore({
             name: `${userId}-${type}`,
@@ -11,7 +12,8 @@ export const handler = async (event) => {
             token: process.env.NETLIFY_BLOBS_TOKEN,
         });
 
-        const blob = await store.get(blobId, { type: "blob" });
+        const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
+        console.log("Blob obtenido:", blob ? blob.type : "No se encontró blob");
 
         return {
             statusCode: 200,
@@ -23,6 +25,7 @@ export const handler = async (event) => {
             isBase64Encoded: true
         };
     } catch (error) {
+        console.error("Error en GET:", error);
         return { statusCode: 500, body: error.message };
     }
 };
