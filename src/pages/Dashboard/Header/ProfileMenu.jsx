@@ -58,7 +58,7 @@ const ProfileMenu = () => {
     try {
       //Eliminar imagen de blob si hay una url ya.
       if (userData?.photoURL) {
-        const url = new URLSearchParams(userData.photoURL);
+        const url = new URLSearchParams(userData.photoURL.split("?")[1]);
         const blobId = url.searchParams.get("blobId");
         
         if (blobId) {
