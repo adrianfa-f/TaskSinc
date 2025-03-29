@@ -19,8 +19,14 @@ export const handler = async (event) => {
         });
 
         // 4. Guardar archivo
-        const blobId = encodeURIComponent(`${Date.now()}-${file.filename}`);
-        const mimeType = file.contentType === "binary/octet-stream" ? "image/jpeg" : file.contentType;
+        const blobId = `${Date.now()}-${file.filename}`;
+
+        const mimeType = file.contentType !== "binary/octet-stream" 
+            ? file.contentType 
+            : file.filename.toLowerCase().endsWith('.png') ? 'image/png'
+            : file.filename.toLowerCase().endsWith('.jpg') ? 'image/jpeg'
+            : file.filename.toLowerCase().endsWith('.jpeg') ? 'image/jpeg'
+            : 'application/octet-stream';
             await store.set(blobId, file.content, {
                 metadata: { type: mimeType }
             });

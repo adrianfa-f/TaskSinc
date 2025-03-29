@@ -16,20 +16,14 @@ export const handler = async (event) => {
         const blob = await store.get(decodedBlobId, { type: "blob" });
         console.log("Blob obtenido:", blob);
         let contentType = blob.type;
-        if (contentType === "binary/octet-stream") {
-            const lowerBlobId = blobId.toLowerCase();
-            if (lowerBlobId.endsWith('.png')) {
-                contentType = 'image/png';
-            } else if (
-                lowerBlobId.endsWith('.jpg') ||
-                lowerBlobId.endsWith('.jpeg') ||
-                lowerBlobId.endsWith('.jfif')
-            ) {
-                contentType = 'image/jpeg';
-            } else if (lowerBlobId.endsWith('.gif')) {
-                contentType = 'image/gif';
-            } else {
-                contentType = 'application/octet-stream'; // fallback
+        if (contentType === "binary/octet-stream" || !contentType) {
+            const extension = blobId.split('.').pop().toLowerCase();
+            switch(extension) {
+                case 'png': contentType = 'image/png'; break;
+                case 'jpg': 
+                case 'jpeg': contentType = 'image/jpeg'; break;
+                case 'gif': contentType = 'image/gif'; break;
+                default: contentType = 'application/octet-stream';
             }
         }
 
