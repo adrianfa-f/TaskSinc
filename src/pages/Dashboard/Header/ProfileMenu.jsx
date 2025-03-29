@@ -99,8 +99,8 @@ const ProfileMenu = () => {
           {userData?.photoURL ? (
             <img 
               src={userData.photoURL.startsWith("blob:") 
-              ? `/.netlify/functions/get?userId=${currentUser.uid}&type=profile&blobId=${userData.photoURL.split(":")[3]}`
-              : userData.photoURL
+                ? `/.netlify/functions/get?userId=${currentUser.uid}&type=profile&blobId=${userData.photoURL.split(":")[3]}`
+                : userData.photoURL
             }
               className="h-16 w-16 rounded-full object-cover cursor-pointer"
               alt="Avatar"
