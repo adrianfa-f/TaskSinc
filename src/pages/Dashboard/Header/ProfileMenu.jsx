@@ -56,6 +56,19 @@ const ProfileMenu = () => {
     if (!file) return;
 
     try {
+      //Eliminar imagen de blob si hay una url ya.
+      if (userData?.photoURL) {
+        const url = new URL(userData.photoURL);
+        const blobId = url.searchParams.get("blobId");
+        
+        if (blobId) {
+          await fetch(
+            `/.netlify/functions/delete?userId=${currentUser.uid}&type=profile&blobId=${blobId}`,
+            { method: "DELETE" }
+          );
+        }
+      }
+
       const formData = new FormData();
       formData.append("file", file);
   

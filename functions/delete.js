@@ -13,12 +13,12 @@ export const handler = async (event) => {
         await store.delete(blobId);
 
         return {
-            statusCode: 204,
+            statusCode: 200,
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "DELETE"
             },
-            body: ""
+            body: "Blob eliminado correctamente"
         };
     } catch (error) {
         return { 
@@ -26,7 +26,7 @@ export const handler = async (event) => {
             body: error.message,
             headers: {
                 "Access-Control-Allow-Origin": "*"
-            }
+            },
         };
     }
 };
