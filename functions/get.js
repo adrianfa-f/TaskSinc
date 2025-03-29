@@ -15,8 +15,19 @@ export const handler = async (event) => {
         const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
         console.log("Blob obtenido:", blob ? blob.type : "No se encontró blob");
         let contentType = blob.type;
-        if (contentType === "binary/octet-stream"&& blobId.toLowerCase().endsWith(".jfif")) {
-            contentType = "image/jpeg";
+        if (contentType === "binary/octet-stream") {
+            const lowerBlobId = blobId.toLowerCase();
+            if (lowerBlobId.endsWith('.png')) {
+                contentType = 'image/png';
+            } else if (
+                lowerBlobId.endsWith('.jfif') ||
+                lowerBlobId.endsWith('.jpg') ||
+                lowerBlobId.endsWith('.jpeg')
+            ) {
+                contentType = 'image/jpeg';
+            } else if (lowerBlobId.endsWith('.gif')) {
+                contentType = 'image/gif';
+            } // Puedes agregar más condiciones según tus necesidades
         }
 
         return {
