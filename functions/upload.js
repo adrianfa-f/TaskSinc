@@ -25,7 +25,7 @@ export const handler = async (event) => {
                 metadata: { type: mimeType }
             });
             const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
-            console.log("Blobs type: ", blob.type)
+            console.log("Blobs completo: ", blob)
         // 5. Responder URL pública
         return {
             statusCode: 200,
