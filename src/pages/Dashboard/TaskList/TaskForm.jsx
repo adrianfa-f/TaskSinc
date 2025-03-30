@@ -76,16 +76,10 @@ const TaskForm = ({ onClose }) => {
         try {
             const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
             const blobId = url.get("blobId");
-            
-            await fetch('/.netlify/functions/delete', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: currentUser.uid,
-                    type: 'temp',
-                    blobId: blobId
-                })
-            });
+            await fetch(
+                `/.netlify/functions/delete?userId=${currentUser.uid}&type=temp&blobId=${blobId}`,
+                { method: "DELETE" }
+            );
             
             setLocalAttachments(prev => prev.filter(a => a.blobUrl !== attachment.blobUrl));
         } catch (error) {
