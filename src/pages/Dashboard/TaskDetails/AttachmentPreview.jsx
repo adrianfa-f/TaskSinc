@@ -1,9 +1,16 @@
 import { FiFile, FiImage, FiVideo, FiMusic, FiX, FiDownload } from 'react-icons/fi';
 
 const AttachmentPreview = ({ attachment, onDelete }) => {
+    if (!attachment || !attachment.type) {
+        console.error('Invalid attachment:', attachment);
+        return null; // O muestra un placeholder
+    }
+
+    const fileType = attachment.type.split('/')[0] || 'unknown';
+    const isImage = fileType === 'image';
+
     const getIcon = () => {
-        const [type] = attachment.type.split('/');
-        switch(type) {
+        switch(fileType) {
             case 'image': return <FiImage className="text-2xl text-blue-500"/>;
             case 'video': return <FiVideo className="text-2xl text-red-500"/>;
             case 'audio': return <FiMusic className="text-2xl text-green-500"/>;
@@ -14,11 +21,15 @@ const AttachmentPreview = ({ attachment, onDelete }) => {
     return (
         <div className="group relative border rounded-lg p-2 hover:bg-gray-50 transition-colors">
             <div className="flex flex-col items-center">
-                {attachment.type.startsWith('image/') ? (
+                {isImage ? (
                     <img 
                         src={attachment.blobUrl} 
                         alt={attachment.name}
                         className="h-20 w-full object-cover rounded-md"
+                        loading="lazy"
+                        onError={(e) => {
+                                e.target.onerror = null; 
+                                e.target.src = 'placeholder-image.svg';}}
                     />
                 ) : (
                     <div className="h-20 w-full flex items-center justify-center">
