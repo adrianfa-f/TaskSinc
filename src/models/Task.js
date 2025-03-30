@@ -9,7 +9,6 @@ export class Task {
         this.dueDate = dueDate;
         this.creationDate = creationDate;
         this.priority = priority;
-        this.attachments = attachments;
         this.location = location;
         this.complete = complete;
     }
@@ -21,7 +20,6 @@ export class Task {
             dueDate: this.dueDate,
             creationDate: this.creationDate,
             priority: this.priority,
-            attachments: this.attachments,
             location: this.location,
             complete: this.complete,
 

@@ -6,6 +6,8 @@ import { Task } from '../../../models/Task';
 import { FiArrowLeft, FiFile, FiPaperclip, FiMapPin, FiUploadCloud, FiSave } from 'react-icons/fi';
 import { FaExclamationCircle } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
+import AttachmentPreview from './AttachmentPreview';
+import { AttachmentService } from '../../../service/AttachmentService';
 
 const TaskDetail = () => {
     const { taskId } = useParams();
@@ -18,6 +20,20 @@ const TaskDetail = () => {
     const [error, setError] = useState('');
     const location = useLocation()
     const isHidden = location.pathname.includes("/dashboard/tasks")&&window.innerWidth<375
+    const [attachments, setAttachments] = useState([]);
+
+    useEffect(() => {
+        const loadAttachments = async () => {
+                if (taskId && currentUser) {
+                    const data = await AttachmentService.getAttachmentsByTask(
+                        currentUser.uid,
+                        taskId
+                    );
+                    setAttachments(data);
+                }
+            };
+            loadAttachments();
+        }, [taskId, currentUser]);
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -167,20 +183,22 @@ const TaskDetail = () => {
                         </div>
     
                         {/* Sección Adjuntos */}
-                        <div className="bg-purple-50 p-4 rounded-lg">
+                        {attachments.length > 0 && (
+                        <div className="bg-gray-50 p-4 rounded-lg">
                             <div className="flex items-center gap-2 mb-3">
-                                <FiPaperclip className="text-purple-600" />
+                                <FiPaperclip className="text-gray-500"/>
                                 <h3 className="font-medium text-gray-700">Archivos Adjuntos</h3>
                             </div>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                <FiUploadCloud className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                                <p className="text-sm text-gray-600">
-                                    Arrastra archivos aquí o{' '}
-                                    <span className="text-blue-600 cursor-pointer font-medium">haz clic para subir</span>
-                                </p>
-                                <p className="text-xs text-gray-500 mt-1">Formatos soportados: PDF, DOC, JPG (max. 10MB)</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {attachments.map((attachment) => (
+                                    <AttachmentPreview
+                                        key={attachment.id}
+                                        attachment={attachment}
+                                    />
+                                ))}
                             </div>
                         </div>
+)}
                     </div>
     
                     {/* Botones de Acción */}
