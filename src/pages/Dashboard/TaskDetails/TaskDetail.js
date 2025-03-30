@@ -33,7 +33,7 @@ const TaskDetail = () => {
                     formData.append("file", file);
                     
                     const response = await fetch(
-                        `/.netlify/functions/blobs/upload?    userId=${currentUser.uid}&    type=attachments`,
+                        `/.netlify/functions/upload?userId=${currentUser.uid}&type=attachments`,
                         { method: "POST", body: formData }
                     );
 
@@ -72,7 +72,7 @@ const TaskDetail = () => {
             attachment.id
         );
         
-        await fetch(`/.netlify/functions/blobs/delete`, {
+        await fetch(`/.netlify/functions/delete`, {
             method: "DELETE",
             body: JSON.stringify({ url: attachment.blobUrl }),
             headers: { "Content-Type": "application/json" }

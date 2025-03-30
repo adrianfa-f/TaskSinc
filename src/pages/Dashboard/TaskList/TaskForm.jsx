@@ -48,7 +48,7 @@ const TaskForm = ({ onClose }) => {
                     formData.append("file", file);
                     
                     const response = await fetch(
-                        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=temp`,
+                        `/.netlify/functions/upload?userId=${currentUser.uid}&type=temp`,
                         { method: "POST", body: formData }
                     );
 
