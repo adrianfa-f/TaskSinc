@@ -121,19 +121,23 @@ const TaskForm = ({ onClose }) => {
                 await Promise.all(
                     localAttachments.map(async (attachment) => {
                         
+
+                        const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
+                        const blobId = url.get("blobId");
+
                       // Mover el blob a la ubicación definitiva
-                        await moveBlob({
+                        const { newBlobId } = await moveBlob({
                             userId: currentUser.uid,
                             oldType: 'temp',
                             newType: 'attachments',
-                            blobId: attachment.url.split('blobId=')[1],
+                            blobId: blobId,
                             taskId: createdTask.id
                         });
 
                         // Crear registro en Firestore
                         const newAttachment = new Attachment({
                             name: attachment.name,
-                            blobUrl: `/.netlify/functions/get?userId=${currentUser.uid}&type=attachments&blobId=${attachment.url.split('blobId=')[1]}`,
+                            blobUrl: `/.netlify/functions/get?userId=${currentUser.uid}&type=attachments&blobId=${newBlobId}`,
                             type: attachment.type,
                             size: attachment.size,
                             taskId: createdTask.id,
