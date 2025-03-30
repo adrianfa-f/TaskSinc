@@ -72,7 +72,6 @@ const TaskForm = ({ onClose }) => {
     
     // Función para eliminar adjuntos temporales
     const handleDeleteTempAttachment = async (attachment) => {
-        console.log("Attachment-BlobUrl: ", attachment, attachment.blobUrl)
         try {
             const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
             const blobId = url.get("blobId");
