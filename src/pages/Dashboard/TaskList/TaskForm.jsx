@@ -58,6 +58,7 @@ const TaskForm = ({ onClose }) => {
                         url: publicUrl,
                         type: mimeType,
                         size: file.size,
+                        taskId: null,
                         isTemp: true // Marcar como temporal
                     };
                 })

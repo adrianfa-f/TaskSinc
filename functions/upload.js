@@ -26,9 +26,13 @@ export const handler = async (event) => {
             : file.filename.toLowerCase().endsWith('.png') ? 'image/png'
             : file.filename.toLowerCase().endsWith('.jpg') ? 'image/jpeg'
             : file.filename.toLowerCase().endsWith('.jpeg') ? 'image/jpeg'
+            : file.filename.toLowerCase().endsWith('.pdf') ? 'application/pdf'
             : 'application/octet-stream';
             await store.set(blobId, file.content, {
-                metadata: { type: mimeType }
+                metadata: { 
+                    type: mimeType ,
+                    originalName: file.filename
+                }
             });
             const blob = await store.get(decodeURIComponent(blobId), { type: "blob" });
             console.log("Blobs completo: ", blob)
@@ -40,7 +44,8 @@ export const handler = async (event) => {
                 "Access-Control-Allow-Origin": "*"
             },
             body: JSON.stringify({
-            publicUrl: `/.netlify/functions/get?userId=${userId}&type=${type}&blobId=${blobId}`
+            publicUrl: `/.netlify/functions/get?userId=${userId}&type=${type}&blobId=${blobId}`,
+            mimeType: mimeType
             })
         };
     } catch (error) {

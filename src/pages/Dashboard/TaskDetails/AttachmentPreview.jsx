@@ -3,7 +3,7 @@ import { FiFile, FiImage, FiVideo, FiMusic, FiX, FiDownload } from 'react-icons/
 const AttachmentPreview = ({ attachment, onDelete }) => {
     if (!attachment || !attachment.type) {
         console.error('Invalid attachment:', attachment);
-        return null; // O muestra un placeholder
+        return <div>Archivo inválido</div>; 
     }
 
     const fileType = attachment.type.split('/')[0] || 'unknown';

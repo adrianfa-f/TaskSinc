@@ -3,12 +3,16 @@ export class Attachment {
         id = null,
         name,
         blobUrl, 
-        type,       // MIME type
+        type = 'application/octet-stream',       // MIME type
         size,
         taskId,
         userId,
         createdAt = new Date().toISOString()
     }) {
+        if (!name || !blobUrl) {
+            throw new Error("Nombre y URL son requeridos");
+        }
+
         this.id = id;
         this.name = name;
         this.blobUrl = blobUrl;
