@@ -18,7 +18,7 @@ export const handler = async (event) => {
         };
 
         // 1. Obtener blob original
-        const oldStore = getStore({ name: `${userId}-${oldType}`, storeConfig });
+        const oldStore = getStore({ name: `${userId}-${oldType}`, ...storeConfig });
         const blob = await oldStore.get(blobId, { type: "blob" });
 
         if (!blob) {

@@ -55,7 +55,7 @@ const TaskForm = ({ onClose }) => {
                     const { publicUrl, mimeType } = await response.json();
                     return {
                         name: file.name,
-                        url: publicUrl,
+                        blobUrl: publicUrl,
                         type: mimeType,
                         size: file.size,
                         taskId: null,
@@ -73,7 +73,8 @@ const TaskForm = ({ onClose }) => {
     // Función para eliminar adjuntos temporales
     const handleDeleteTempAttachment = async (attachment) => {
         try {
-            const blobId = new URL(attachment.url).searchParams.get('blobId');
+            const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
+            const blobId = url.get("blobId");
             
             await fetch('/.netlify/functions/delete', {
                 method: 'DELETE',
