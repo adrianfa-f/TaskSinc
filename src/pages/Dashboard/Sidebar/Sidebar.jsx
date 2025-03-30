@@ -59,7 +59,7 @@ const Sidebar = ({setCurrentFilter, isMobileOpen, toggleMobileMenu}) => {
                     <button className={`text-left px-4 py-2 rounded-r-full ${subFilter==="high" ?  "w-3/4 bg-red-600 text-white":"w-2/3 bg-gray-50 hover:w-3/4 hover:bg-gray-200"} transition-all duration-500 ease-in-out`} onClick={() => handlePriorityFilter("high")}>Alta</button>
                 </div>
                     
-                <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="Completadas" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("Completadas", "creationDate", "desc")}>Completdas</button>
+                <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="Completadas" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("Completadas", "creationDate", "desc")}>Completadas</button>
                 <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="No-completadas" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("No-completadas", "creationDate", "desc")}>No completadas</button>
                 <button className={`w-full text-left px-4 py-2 rounded-r-full ${isSelected==="Vencimiento" ? "bg-blue-100" : "hover:bg-gray-200 bg-gray-50 text-blue-700"} `} onClick={() => handleMainFilter("Vencimiento", "dueDate", "asc")}>Vencimiento</button>
 
