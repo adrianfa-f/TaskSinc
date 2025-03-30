@@ -12,13 +12,12 @@ export const handler = async (event) => {
             };
         }
 
-        const storeConfig = {
-            siteID: process.env.NETLIFY_BLOBS_SITE_ID,
-            token: process.env.NETLIFY_BLOBS_TOKEN
-        };
-
         // 1. Obtener blob original
-        const oldStore = getStore({ name: `${userId}-${oldType}`, ...storeConfig });
+        const oldStore = getStore({ 
+            name: `${userId}-${oldType}`, 
+            siteID: process.env.NETLIFY_BLOBS_SITE_ID,
+            token: process.env.NETLIFY_BLOBS_TOKEN,
+        });
         const blob = await oldStore.get(blobId, { type: "blob" });
 
         if (!blob) {
@@ -29,7 +28,11 @@ export const handler = async (event) => {
         }
 
         // 2. Guardar en nueva ubicación
-        const newStore = getStore({ name: `${userId}-${newType}`, storeConfig });
+        const newStore = getStore({ 
+            name: `${userId}-${newType}`, 
+            siteID: process.env.NETLIFY_BLOBS_SITE_ID,
+            token: process.env.NETLIFY_BLOBS_TOKEN,
+        });
         const newBlobId = `${taskId}-${blobId}`;
         await newStore.set(newBlobId, blob);
 

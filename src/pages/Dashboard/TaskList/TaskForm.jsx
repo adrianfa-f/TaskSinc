@@ -73,7 +73,7 @@ const TaskForm = ({ onClose }) => {
     // Función para eliminar adjuntos temporales
     const handleDeleteTempAttachment = async (attachment) => {
         try {
-            const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
+            const url = new URL(attachment.blobUrl).searchParams;
             const blobId = url.get("blobId");
             
             await fetch('/.netlify/functions/delete', {
@@ -86,7 +86,7 @@ const TaskForm = ({ onClose }) => {
                 })
             });
             
-            setLocalAttachments(prev => prev.filter(a => a.url !== attachment.url));
+            setLocalAttachments(prev => prev.filter(a => a.blobUrl !== attachment.blobUrl));
         } catch (error) {
             console.error('Error eliminando archivo temporal:', error);
         }
@@ -239,7 +239,9 @@ const TaskForm = ({ onClose }) => {
                             <input
                                 type="file"
                                 multiple
-                                onChange={(e) => handleFileUpload(e.target.files)}
+                                onChange={(e) =>{
+                                    e.preventDefault();
+                                    handleFileUpload(e.target.files)}}
                                 id="file-upload"
                                 className="hidden"
                             />
