@@ -4,13 +4,16 @@ import { useAuth } from '../../../context/AuthContext';
 import { Task } from '../../../models/Task';
 import { createTask } from '../../../service/TaskService/TaskService';
 import { useClickOutside } from '../../../Hooks/useClickOutside';
+import AttachmentPreview from '../TaskDetails/AttachmentPreview';
+import { AttachmentService } from '../../../service/AttachmentService';
+import { Attachment } from '../../../models/Attachment';
 
 const TaskForm = ({ onClose }) => {
     const { currentUser } = useAuth();
     const formRef = useRef();
     useClickOutside(formRef, onClose);
-    const [attachments, setAttachments] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [localAttachments, setLocalAttachments] = useState([]);
     
     const [formData, setFormData] = useState({
         title: '',
@@ -39,46 +42,51 @@ const TaskForm = ({ onClose }) => {
     const handleFileUpload = async (files) => {
         setUploading(true);
         try {
-            const uploadPromises = Array.from(files).map(async    (file) => {
-                const formData = new FormData();
-                formData.append("file", file);
-                
-                const response = await fetch(
-                    `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=attachments`,
-                    {
-                        method: "POST",
-                        body: formData
-                    }
-                );
+            const newAttachments = await Promise.all(
+                Array.from(files).map(async (file) => {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    
+                    const response = await fetch(
+                        `/.netlify/functions/blobs/upload?userId=${currentUser.uid}&type=temp`,
+                        { method: "POST", body: formData }
+                    );
 
-                const { publicUrl } = await response.json();
-                return {
-                    name: file.name,
-                    url: publicUrl,
-                    type: file.type.split('/')[0]
-                };
-            });
+                    const { publicUrl, mimeType } = await response.json();
+                    return {
+                        name: file.name,
+                        url: publicUrl,
+                        type: mimeType,
+                        size: file.size,
+                        isTemp: true // Marcar como temporal
+                    };
+                })
+            );
 
-            const newAttachments = await Promise.all(uploadPromises);
-            setAttachments([...attachments, ...newAttachments]);
-
+            setLocalAttachments([...localAttachments, ...newAttachments]);
         } finally {
             setUploading(false);
         }
     };
-
-    const handleDeleteAttachment = async (attachmentUrl) => {
+    
+    // Función para eliminar adjuntos temporales
+    const handleDeleteTempAttachment = async (attachment) => {
         try {
-            const [,, userId, type, blobId] = attachmentUrl.split(/[:/]/);
+            const blobId = new URL(attachment.url).searchParams.get('blobId');
             
-            await fetch(
-                `/api/blobs/delete?userId=${userId}&type=${type}&blobId=${blobId}`,
-                { method: "DELETE" }
-            );
-
-            setAttachments(attachments.filter(a => a.url !== attachmentUrl));
+            await fetch('/.netlify/functions/delete', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: currentUser.uid,
+                    type: 'temp',
+                    blobId: blobId
+                })
+            });
+            
+            setLocalAttachments(prev => prev.filter(a => a.url !== attachment.url));
         } catch (error) {
-            console.error("Error eliminando archivo:", error);
+            console.error('Error eliminando archivo temporal:', error);
         }
     };
 
@@ -89,12 +97,56 @@ const TaskForm = ({ onClose }) => {
         try {
             // Crear instancia del modelo Task
             const newTask = new Task({
-                ...formData, attachments,
+                ...formData,
                 dueDate: new Date(formData.dueDate).toISOString().split('T')[0]
             });
 
             // Llamar directamente al servicio
-            await createTask(newTask.toFirestore(), currentUser.uid);
+            const createdTask = await createTask(newTask.toFirestore(), currentUser.uid);
+
+            if (localAttachments.length > 0) {
+
+                const moveBlob = async (params) => {
+                    const response = await fetch('/.netlify/functions/move', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(params)
+                    });
+                    
+                    if (!response.ok) throw new Error('Error moving blob');
+                    return await response.json();
+                };
+
+                await Promise.all(
+                    localAttachments.map(async (attachment) => {
+                        
+                      // Mover el blob a la ubicación definitiva
+                        await moveBlob({
+                            userId: currentUser.uid,
+                            oldType: 'temp',
+                            newType: 'attachments',
+                            blobId: attachment.url.split('blobId=')[1],
+                            taskId: createdTask.id
+                        });
+
+                        // Crear registro en Firestore
+                        const newAttachment = new Attachment({
+                            name: attachment.name,
+                            blobUrl: `/.netlify/functions/get?userId=${currentUser.uid}&type=attachments&blobId=${attachment.url.split('blobId=')[1]}`,
+                            type: attachment.type,
+                            size: attachment.size,
+                            taskId: createdTask.id,
+                            userId: currentUser.uid
+                        });
+
+                        await AttachmentService.createAttachment(
+                            newAttachment,
+                            currentUser.uid,
+                            createdTask.id
+                        );
+                    })
+                );
+            }
 
             onClose();
         } catch (error) {
@@ -145,12 +197,12 @@ const TaskForm = ({ onClose }) => {
                                     Baja
                                 </span>
                             </button>
-                            <button type="button" onClick={() => setFormData({...formData, priority: "medium"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "medium" ? 'border-2 border-yellow-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                            <button type="button" onClick={() => setFormData({...formData, priority: "medium"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "medium" ? 'border-2 border-yellow-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "medium" ? 'text-yellow-700' : 'text-gray-600'}`}>
                                     Media
                                 </span>
                             </button>
-                            <button type="button" onClick={() => setFormData({...formData, priority: "high"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "high" ? 'border-2 border-red-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'} $ {new Task({priority: level}).getPriorityColor()}`}>
+                            <button type="button" onClick={() => setFormData({...formData, priority: "high"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "high" ? 'border-2 border-red-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "high" ? 'text-red-700' : 'text-gray-600'}`}>
                                     Alta
                                 </span>
@@ -195,18 +247,13 @@ const TaskForm = ({ onClose }) => {
                             </label>
 
                             {/* Lista de archivos subidos */}
-                            <div className="mt-3 space-y-2">
-                                {attachments.map((attachment, index)    => (
-                                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                        <span className="truncate">   {attachment.name}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDeleteAttachment(attachment.url)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            <FiX className="h-5 w-5" />
-                                        </button>
-                                    </div>
+                            <div className="grid grid-cols-3 gap-2 mt-3">
+                                {localAttachments.map((attachment, index) => (
+                                    <AttachmentPreview
+                                        key={index}
+                                        attachment={attachment}
+                                        onDelete={handleDeleteTempAttachment}
+                                    />
                                 ))}
                             </div>
                         </div>

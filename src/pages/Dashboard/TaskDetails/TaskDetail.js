@@ -3,11 +3,12 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { getTaskById, updateTask } from '../../../service/TaskService/TaskService';
 import { Task } from '../../../models/Task';
-import { FiArrowLeft, FiFile, FiPaperclip, FiMapPin, FiUploadCloud, FiSave } from 'react-icons/fi';
+import { FiArrowLeft, FiPaperclip, FiMapPin, FiSave } from 'react-icons/fi';
 import { FaExclamationCircle } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import AttachmentPreview from './AttachmentPreview';
 import { AttachmentService } from '../../../service/AttachmentService';
+import { Attachment } from '../../../models/Attachment';
 
 const TaskDetail = () => {
     const { taskId } = useParams();
@@ -18,22 +19,67 @@ const TaskDetail = () => {
     const [isEditing, setIsEditing] = useState(searchParams.get('edit') === 'true');
     const [formData, setFormData] = useState({});
     const [error, setError] = useState('');
+    const [uploading, setUploading] = useState();
     const location = useLocation()
     const isHidden = location.pathname.includes("/dashboard/tasks")&&window.innerWidth<375
     const [attachments, setAttachments] = useState([]);
 
-    useEffect(() => {
-        const loadAttachments = async () => {
-                if (taskId && currentUser) {
-                    const data = await AttachmentService.getAttachmentsByTask(
+    const handleFileUpload = async (files) => {
+        setUploading(true);
+        try {
+            const newAttachments = await Promise.all(
+                Array.from(files).map(async (file) => {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    
+                    const response = await fetch(
+                        `/.netlify/functions/blobs/upload?    userId=${currentUser.uid}&    type=attachments`,
+                        { method: "POST", body: formData }
+                    );
+
+                    const { publicUrl, mimeType } = await response.json();
+
+                    const newAttachment = new Attachment({
+                        name: file.name,
+                        blobUrl: publicUrl,
+                        type: mimeType,
+                        size: file.size,
+                        taskId: taskId,
+                        userId: currentUser.uid
+                    });
+
+                    await AttachmentService.createAttachment(
+                        newAttachment,
                         currentUser.uid,
                         taskId
                     );
-                    setAttachments(data);
-                }
-            };
-            loadAttachments();
-        }, [taskId, currentUser]);
+
+                    return newAttachment;
+                })
+            );
+
+            setAttachments([...attachments, ...newAttachments]);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+      // Función de eliminación
+    const handleDeleteAttachment = async (attachment) => {
+        await AttachmentService.deleteAttachment(
+            currentUser.uid,
+            taskId,
+            attachment.id
+        );
+        
+        await fetch(`/.netlify/functions/blobs/delete`, {
+            method: "DELETE",
+            body: JSON.stringify({ url: attachment.blobUrl }),
+            headers: { "Content-Type": "application/json" }
+        });
+        
+        setAttachments(attachments.filter(a => a.id !== attachment.id));
+    };
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -297,17 +343,37 @@ const TaskDetail = () => {
                     
                         {/* Adjuntos */}
                         {task.attachments?.length > 0 && (
-                            <div className="bg-gray-50 p-4 rounded-lg">
+                            <div className="bg-purple-50 p-4 rounded-lg">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <FiPaperclip className="text-gray-500"/>
+                                    <FiPaperclip className="text-purple-600" />
                                     <h3 className="font-medium text-gray-700">Archivos Adjuntos</h3>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {task.attachments.map((file, index) => (
-                                        <div key={index} className="flex items-center gap-2 p-2 bg-white rounded border">
-                                            <FiFile className="text-gray-400"/>
-                                            <span className="text-sm text-gray-600 truncate">{file.name}</span>
-                                        </div>
+
+                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mb-4">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={(e) => handleFileUpload(e.target.files)}
+                                        id="file-upload-edit"
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="file-upload-edit"
+                                        className="cursor-pointer block"
+                                    >
+                                        <p className="text-sm text-gray-600">
+                                            {uploading ? 'Subiendo...' : 'Haz clic para agregar más archivos'}
+                                        </p>
+                                    </label>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2">
+                                    {attachments.map((attachment) => (
+                                        <AttachmentPreview
+                                            key={attachment.id}
+                                            attachment={attachment}
+                                            onDelete={isEditing ? handleDeleteAttachment : null}
+                                        />
                                     ))}
                                 </div>
                             </div>
