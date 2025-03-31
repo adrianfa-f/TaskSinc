@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import {FiCheckSquare, FiEdit, FiTrash, FiPaperclip, FiMapPin, FiAlertTriangle} from 'react-icons/fi';
+import {FiCheckSquare, FiEdit, FiTrash, FiAlertTriangle} from 'react-icons/fi';
 import { SiGoogleassistant } from 'react-icons/si';
 import { FaExclamationCircle } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -146,12 +146,6 @@ const Task = ({ task, onClick }) => {
                                 >
                                     <FiTrash className="text-red-600" />
                                 </button>
-                                <button className="text-purple-600 w-full flex items-center px-1 py-1 rounded-md">
-                                    <FiPaperclip className="h-5 w-5" />
-                                </button>
-                                <button className="text-green-600 w-full flex items-center px-1 py-1 rounded-md">
-                                    <FiMapPin className="h-5 w-5" />
-                                </button>
                                 <button className="text-orange-600 w-full flex items-center px-1 py-1 rounded-md">
                                     <SiGoogleassistant className="h-5 w-5" />
                                 </button>
@@ -170,12 +164,6 @@ const Task = ({ task, onClick }) => {
                     </button>
                     <button onClick={() => handleDeleteConfirmation()} className="text-gray-500 hover:text-red-600">
                         <FiTrash className="h-5 w-5" />
-                    </button>
-                    <button className="text-gray-500 hover:text-purple-600">
-                        <FiPaperclip className="h-5 w-5" />
-                    </button>
-                    <button className="text-gray-500 hover:text-green-600">
-                        <FiMapPin className="h-5 w-5" />
                     </button>
                     <button className="text-gray-500 hover:text-orange-600">
                         <SiGoogleassistant className="h-5 w-5" />
