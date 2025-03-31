@@ -30,6 +30,10 @@ const Login = () => {
                     console.log('Error al enviar el correo de reseteo: ', error)
                 }
             } else {
+                if (!email || !password) {
+                    setMessage("Correo y contraseña son obligatorios");
+                    return;
+                }
                 try {
                     setIsSubmitting(true)
                     const userCredentials = await signInWithEmailAndPassword(auth, email, password);
@@ -80,7 +84,7 @@ const Login = () => {
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                             Password
                         </label>
-                        <input type='password' required value={password} onChange={e => setPassword(e.target.value)} placeholder='Password' className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type='password' value={password} onChange={e => setPassword(e.target.value)} placeholder='Password' className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
                     <div className={`bg-gray-50 rounded-lg shadow-md p-2 mb-4 ${message === ""?"hidden": ""}`}>
                         <p className="text-ray-700 text-center text-sm font-bold">
@@ -88,7 +92,7 @@ const Login = () => {
                         </p>
                     </div>
                     <div className={`flex items-center justify-center mb-4`}>
-                        <button type='submit' className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all duration-300 w-36 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>Iniciar sesión</button>
+                        <button disabled={isSubmitting} type='submit' className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all duration-300 w-36 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>Iniciar sesión</button>
                     </div>
                     <div className='flex items-center justify-between'>
                         <button disabled={isSubmitting} id="resetPassword" type='submit' className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">Olvide mi contraseña</button>
