@@ -20,7 +20,11 @@ const Login = () => {
         } else {
             if (forgotPassword) {
                 try {
-                    await sendPasswordResetEmail(auth, email)
+                    await sendPasswordResetEmail(auth, email, 
+                        {
+                            url: `${window.location.origin}/login`
+                        }
+                    )
                     setMessage("Se ha enviado un correo electrónico para restablecer tu contraseña.")
                 } catch (error) {
                     console.log('Error al enviar el correo de reseteo: ', error)
