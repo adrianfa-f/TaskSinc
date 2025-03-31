@@ -67,16 +67,26 @@ const TaskDetail = () => {
       // Función de eliminación
     const handleDeleteAttachment = async (attachment) => {
         try {
+            if (!attachment?.id || !attachment?.blobUrl) {
+                throw new Error("Datos del adjunto incompletos");
+            }
+
+            await AttachmentService.deleteAttachment(
+                currentUser.uid,
+                taskId,
+                attachment.id
+            );
+
             const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
             const blobId = url.get("blobId");
             await fetch(
-                `/.netlify/functions/delete?userId=${currentUser.uid}&type=temp&blobId=${blobId}`,
+                `/.netlify/functions/delete?userId=${currentUser.uid}&type=attachments&blobId=${blobId}`,
                 { method: "DELETE" }
             );
             
             setAttachments(prev => prev.filter(a => a.blobUrl !== attachment.blobUrl));
         } catch (error) {
-            console.error('Error eliminando archivo temporal:', error);
+            console.error('Error eliminando archivo Adjunto:', error);
         }
     };
 

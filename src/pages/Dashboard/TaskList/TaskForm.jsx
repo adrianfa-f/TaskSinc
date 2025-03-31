@@ -76,7 +76,7 @@ const TaskForm = ({ onClose }) => {
             const url = new URLSearchParams(attachment.blobUrl.split("?")[1]);
             const blobId = url.get("blobId");
             await fetch(
-                `/.netlify/functions/delete?userId=${currentUser.uid}&type=temp&blobId=${blobId}`,
+                `/.netlify/functions/delete?userId=${currentUser.uid}&type=attachments&blobId=${blobId}`,
                 { method: "DELETE" }
             );
             
