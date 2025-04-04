@@ -162,7 +162,7 @@ const TaskForm = ({ onClose }) => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
             <div ref={formRef} className="bg-gray-50 rounded-xl p-6 w-full max-w-md mx-4 shadow-xl border border-gray-100 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800"> Nueva Tarea</h2>
+                    <h2 className="text-2xl font-bold text-gray-800"> Nueva Tarea </h2>
                     <button 
                         onClick={onClose}
                         className="text-gray-500 hover:text-gray-700 transition-colors"
@@ -175,14 +175,14 @@ const TaskForm = ({ onClose }) => {
                     {/* Sección horizontal para título y fecha */}
                     <div className="grid grid-cols-1 gap-4">
                         <div>
-                            <label className={labelStyle}>Título *</label>
+                            <label className={labelStyle}>Título</label>
                             <input type="text" required className={`${inputStyle}`} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Nombre de la tarea"/>
                         </div>
                         
                         <div className="bg-white p-4 rounded-xl border">
                             <label className={labelStyle}>
                                 <FiCalendar className="inline mr-2 -mt-1" />
-                                Fecha límite *
+                                Fecha límite
                             </label>
                             <input type="date" required className={`${inputStyle} [&::-webkit-calendar-picker-indicator]:bg-blue-500/20`} min={new Date().toISOString().split('T')[0]} value={formData.dueDate} onChange={(e) => setFormData({...formData, dueDate: e.target.value})}/>
                         </div>
@@ -190,7 +190,7 @@ const TaskForm = ({ onClose }) => {
 
                     {/* Prioridad con nuevo diseño */}
                     <div className="bg-white p-4 rounded-xl border">
-                        <label className={labelStyle}>📌 Nivel de Prioridad</label>
+                        <label className={labelStyle}>📌 Nivel de Prioridad </label>
                         <div className="grid grid-cols-3 gap-2 mt-2">
                             <button type="button" onClick={() => setFormData({...formData, priority:"low"})} className={`flex-1 p-2 rounded-md flex items-center justify-center space-x-2 transition-all ${formData.priority === "low" ? 'border-2 border-green-500 bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'}`}>
                                 <span className={`text-sm font-medium ${formData.priority === "low" ? 'text-green-700' : 'text-gray-600'}`}>
@@ -212,7 +212,7 @@ const TaskForm = ({ onClose }) => {
 
                     {/* Descripción */}
                     <div>
-                        <label className={labelStyle}>📝 Descripción</label>
+                        <label className={labelStyle}>📝 Descripción </label>
                         <textarea
                             rows="3"
                             className={`${inputStyle} resize-none`}
