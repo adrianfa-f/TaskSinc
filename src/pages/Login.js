@@ -58,11 +58,22 @@ const Login = () => {
                         }
                     }
                 } catch (error) {
+                    let errorMessage = "Error desconocido"
                     if (error.code === "auth/invalid-credential") {
                         setMessage("Correo o contraseña incorrecta.")
                         setTimeout(() => {setIsSubmitting(false)}, 10000)
                     }
-                    console.log("Error en el inicio de sesión:", error);
+                    switch(error.code) {
+                        case "auth/user-not-found":
+                            errorMessage = "Correo no registrado";
+                            break;
+                        case "auth/wrong-password":
+                            errorMessage = "Contraseña incorrecta";
+                            break;
+                        default:
+                            break
+                    }
+                    console.log("Error en el inicio de sesión:", error, errorMessage);
                 }
             }
         }
